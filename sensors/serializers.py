@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import PressureSensor, PressureReading
 from django.utils.dateparse import parse_datetime
+from django.core.exceptions import ValidationError
 
 class PressureSensorSerializer(serializers.ModelSerializer):
     class Meta:

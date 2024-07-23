@@ -3,24 +3,21 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import uuid
 
+def generate_serial_number():
+    return str(uuid.uuid4())
+
 class PressureSensor(models.Model):
     label = models.CharField(max_length=100)
     installation_date = models.DateTimeField(default=timezone.now)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    serial_number = models.CharField(max_length=100, unique=True,null=True)
+    serial_number = models.CharField(max_length=100, unique=True,null=True,default=generate_serial_number,editable=False)
     
     def clean(self):
         super().clean()  
         if not self.label.startswith('PSSR'):
             raise ValidationError({'label': 'Label must start with the prefix "PSSR".'})
         
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        if not self.serial_number:
-            self.serial_number = str(uuid.uuid4())
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return self.label
 
